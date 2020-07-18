@@ -1,0 +1,53 @@
+#!/usr/bin/python
+'''
+Eric Sullivan
+04/13/2020
+Test script for wwv Driver
+By default, it tests the userspace program
+10 times (which is 20 encoded dates).
+'''
+import serial
+import os
+import sys
+import time
+from datetime import datetime
+
+if len(sys.argv) < 2:
+    times = 10
+else:
+    times = int(sys.argv[1])
+
+func = "./userspace"
+errors = 0
+
+try:
+    ser = serial.Serial('/dev/ttyAMA0', 19200)
+    for i in range(times):
+
+        # Saves current datetime and runs usespace code
+        date = datetime.utcnow().strftime("Year 20%y DoY %j Hour %H Minute %M\r\n")
+        os.system(func)
+        time.sleep(2)
+    
+        # Runs twice because userspaces code creates two processes
+        for j in range(2):
+            while True:
+                lin = ser.readline()
+                if "Year" in lin:
+                    # If dates match
+                    if lin == date:
+                        print "Correct"
+                        break
+                    # If dates don't match, it is recorded in the
+                    # error log and the errors total increases
+                    else:
+                        print "Incorrect"
+                        fi = open("error.log", "a+")
+                        fi.write(lin + " " + date)
+                        fi.close()
+                        errors = errors + 1
+                        break
+    ser.close()
+    print "Failed ", errors, " times."
+except:
+    print "Error while reading serial port!"
