@@ -13,7 +13,7 @@
 #include <fcntl.h>
 #include <sys/ioctl.h>
 #include <time.h>
-#include "../wwv.h"
+#include "wwv.h"
 
 int main (int argc, char *argv[])
 {

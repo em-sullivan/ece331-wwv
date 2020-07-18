@@ -1,6 +1,6 @@
 TARGET = userspace
 OBJS = userspace.o
-CFLAGS = -Wall -o2 -g
+CFLAGS = -Wall -o2 -g -I ../
 
 all: ${TARGET}
 
